@@ -27,22 +27,44 @@ const DESCRIPTION =
 
     <section class="hero">
       <div class="hero-inner">
-        <span class="eyebrow">Personal research library</span>
-        <h1>Save it, read it, highlight it, listen to it.</h1>
-        <p class="hero-lede">
-          One library for the articles and PDFs you actually want to read. Clean typography,
-          persistent highlights, text-to-speech, and AI chat over your own sources.
-        </p>
-        <div class="cta-row">
-          <a class="btn-primary" href="/library">
-            Save your first article
-            <span aria-hidden="true">→</span>
-          </a>
+        <div class="hero-copy">
+          <span class="eyebrow">Personal research library</span>
+          <h1>Save it, read it, highlight it, listen to it.</h1>
+          <p class="hero-lede">
+            One library for the articles and PDFs you actually want to read. Clean typography,
+            persistent highlights, text-to-speech, and AI chat over your own sources.
+          </p>
+          <div class="cta-row">
+            <a class="btn-primary" href="/library">
+              Save your first article
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <p class="fine">
+            No account needed — works in your browser right now.
+            <a href="/extension">Chrome extension available.</a>
+          </p>
         </div>
-        <p class="fine">
-          No account needed — works in your browser right now.
-          <a href="/extension">Chrome extension available.</a>
-        </p>
+
+        <div class="library-preview" aria-label="Illustrative Library Reader view">
+          <div class="preview-head">
+            <span>Illustrative library</span>
+            <span>3 saved sources</span>
+          </div>
+          <div class="preview-body">
+            <p class="preview-kicker">Continue reading</p>
+            <h2>How durable systems earn trust</h2>
+            <p class="preview-meta">Article · 14 min · 3 highlights</p>
+            <blockquote>
+              “The useful part is not collecting more material. It is keeping the evidence close
+              enough to revisit.”
+            </blockquote>
+            <div class="preview-actions" aria-hidden="true">
+              <span>Highlight</span><span>Add note</span><span>Listen</span>
+            </div>
+          </div>
+          <p class="preview-note">Example content only — your library renders your saved sources.</p>
+        </div>
       </div>
     </section>
 
@@ -53,7 +75,7 @@ const DESCRIPTION =
       </div>
       <div class="grid-3">
         <article class="card">
-          <div class="card-icon" aria-hidden="true">📄</div>
+          <div class="card-icon" aria-hidden="true">01</div>
           <h3>One library for articles and PDFs</h3>
           <p>
             Paste a URL and the page is cleaned with Mozilla Readability. Upload a PDF and it goes
@@ -61,7 +83,7 @@ const DESCRIPTION =
           </p>
         </article>
         <article class="card">
-          <div class="card-icon" aria-hidden="true">✦</div>
+          <div class="card-icon" aria-hidden="true">02</div>
           <h3>Highlight and annotate</h3>
           <p>
             A distraction-free reader view with persistent highlights and a side panel for notes.
@@ -69,7 +91,7 @@ const DESCRIPTION =
           </p>
         </article>
         <article class="card">
-          <div class="card-icon" aria-hidden="true">🎧</div>
+          <div class="card-icon" aria-hidden="true">03</div>
           <h3>Listen to anything you save</h3>
           <p>
             Hit Listen on an article or PDF and your browser reads it aloud — voice and rate are
