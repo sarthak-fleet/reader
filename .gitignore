@@ -69,11 +69,6 @@ node_modules/
 # build output
 dist/
 
-# Blume (documentation presentation layer — generated from docs/)
-.blume/
-.blume/dist/
-docs-site/
-
 # Local agent logs / scratch
 .agent-logs/
 .codevetter/

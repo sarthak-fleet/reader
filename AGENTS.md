@@ -38,8 +38,6 @@ pnpm format           # biome format --write .
 pnpm db:generate      # generate a tracked D1 migration
 pnpm db:migrate:local # apply migrations to isolated local D1
 pnpm docs:check       # validate docs/ links + structure
-pnpm docs:dev         # blume dev (local docs site; requires `pnpm add -D blume`)
-pnpm docs:build       # blume build (presentation only; not part of production build)
 ```
 
 Chrome extension (separate workspace, excluded from root tooling):
@@ -115,8 +113,6 @@ Full command map: [docs/development/commands.md](docs/development/commands.md).
    `node scripts/check-docs.mjs`) — it catches broken links, missing required
    sections, and files outside the canonical structure. CI runs it in
    `.github/workflows/docs.yml`.
-7. **Blume is presentation only.** `blume.config.ts` renders `docs/`; never
-   edit generated Blume output. Edit the Markdown and rebuild.
 
 ## Repo structure (high level)
 

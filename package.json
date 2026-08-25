@@ -32,8 +32,6 @@
     "format:check": "biome format .",
     "check": "biome check .",
     "docs:check": "node scripts/check-docs.mjs",
-    "docs:dev": "blume dev",
-    "docs:build": "blume build",
     "knip": "knip --no-exit-code --reporter symbols",
     "knip:strict": "knip --reporter symbols",
     "quality:unused": "node scripts/check-code-health.mjs unused",

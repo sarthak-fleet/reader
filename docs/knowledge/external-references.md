@@ -101,14 +101,6 @@ How `PDFS_BUCKET` binding works (`put`, `get`, `delete`), zero-egress
 pricing, and the difference from the S3-compatible HTTP API.
 → https://developers.cloudflare.com/r2/api/workers/workers-api-usage/
 
-## Documentation
-
-**Blume**
-The presentation/search layer for `docs/`. Reads `blume.config.ts` and
-renders Markdown/MDX. Markdown in `docs/` is the source of truth; Blume is
-not.
-→ https://useblume.dev/docs/
-
 ## Spec-driven development
 
 **GitHub Issues**

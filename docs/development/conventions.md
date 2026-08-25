@@ -58,8 +58,6 @@ docs: consolidate knowledge system
   [../index.md#maintenance-rules](../index.md#maintenance-rules).
 - Run `pnpm docs:check` before committing doc changes — it catches broken
   links and files outside the canonical structure.
-- Blume (`blume.config.ts`) only renders `docs/`; never edit generated Blume
-  output.
 
 ## Spec-driven changes
 

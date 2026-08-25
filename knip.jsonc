@@ -14,12 +14,10 @@
         // Loaded through Tailwind CSS directives rather than JavaScript imports.
         "@tailwindcss/typography",
         // Optional documentation presentation layer; Markdown remains authoritative.
-        "blume",
         // Spawned by the code-health checker rather than imported.
         "jscpd",
         "tailwindcss"
       ],
-      "ignoreBinaries": ["blume"]
     },
     "landing-astro": {
       "entry": ["src/pages/**/*.astro", "astro.config.mjs"],

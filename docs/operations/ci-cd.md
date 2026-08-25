@@ -54,7 +54,7 @@ See [jobs.md](jobs.md).
 ## Docs — `.github/workflows/docs.yml`
 
 **Triggers:** push/PR affecting `docs/**`, `AGENTS.md`, `STATUS.md`,
-`blume.config.ts`, `scripts/check-docs.mjs`; plus `workflow_dispatch`.
+`scripts/check-docs.mjs`; plus `workflow_dispatch`.
 
 **Steps:** checkout → Node 22 → run `node scripts/check-docs.mjs` to validate
 `docs/` link integrity and structure.

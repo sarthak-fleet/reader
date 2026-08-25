@@ -35,8 +35,6 @@ ordering; run `pnpm run` to see the live list.
 | `pnpm format:check` | `biome format .` |
 | `pnpm check` | `biome check .` |
 | `pnpm docs:check` | `node scripts/check-docs.mjs` — validate docs/ links + structure |
-| `pnpm docs:build` | `blume build` — render docs/ via Blume (presentation only; requires `pnpm add -D blume` first) |
-| `pnpm docs:dev` | `blume dev` — local Blume dev server (requires `pnpm add -D blume` first) |
 
 ## Chrome extension (`packages/chrome-extension/`)
 
@@ -65,6 +63,3 @@ pnpm build       = validate-env(build) → vite build
 pnpm cf:build    = pnpm build → landing-astro build → overlay-astro-landing.mjs
 pnpm deploy      = validate-env(deploy) → cf:build → wrangler deploy
 ```
-
-`pnpm docs:build` and `pnpm docs:dev` are **not** part of the production
-build — Blume is the presentation layer for the documentation site only.

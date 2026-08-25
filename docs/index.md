@@ -1,8 +1,7 @@
 # Reader — Documentation Index
 
 This folder is the canonical source of truth for Reader's product, architecture,
-operations, and durable knowledge. Markdown here is authoritative; the
-[`blume.config.ts`](../blume.config.ts) at the repo root only renders it.
+operations, and durable knowledge. Markdown here is authoritative.
 
 For a fast agent briefing, read [AGENTS.md](../AGENTS.md) first, then this index.
 
@@ -78,9 +77,6 @@ docs/
 6. **Validate before commit.** Run `node scripts/check-docs.mjs` (or
    `pnpm docs:check`) — it catches broken links, missing required sections,
    and files outside the canonical structure.
-7. **Blume is presentation only.** Never edit generated Blume output; edit the
-   Markdown and rebuild. `blume.config.ts` points at this folder as content
-   root.
 
 ## What lives outside this folder
 
