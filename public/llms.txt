@@ -1,48 +1,45 @@
 # Reader
 
-> Research library: capture, annotate, and AI-chat over your reading — private by default.
+> Personal research library for turning saved articles and PDFs into focused reading, annotation, retrieval, and source-grounded discussion.
 
 ## When to use this
 
-- Best fit: capturing web articles and PDFs for later reading, annotation, and AI-assisted summarization
-- Best fit: private research libraries with tag/list/board organization and full-text search
-- Not a fit: public bookmark sharing or social reading platforms
-- Not a fit: real-time collaborative document editing
+- Use Reader when a web article or PDF deserves attentive reading and durable notes.
+- Use Reader when a claim should remain close to the passage and annotation behind it.
+- Do not treat Reader as a source-verification service; it preserves material but does not validate its claims.
+- Do not expect public social reading, real-time collaboration, or paid team workflows.
+
+## Current state
+
+- Mature personal-use product in maintenance-first support.
+- Browser-local start; Google sign-in for the account-backed library.
+- Libraries are private by default; sharing is explicit.
+- Chrome extension is source-built for local unpacked use, not publicly distributed.
+- No public plan or checkout; no permanent pricing model is declared.
 
 ## Product
 
-- [Home](https://read.significanthobbies.com/): App (auth for library)
-- [FAQ](https://read.significanthobbies.com/faq): Frequently asked questions
+- [Home](https://read.significanthobbies.com/): Purpose, mechanism, and current boundary
+- [FAQ](https://read.significanthobbies.com/faq): Access, privacy, AI, export, and extension answers
 - [Changelog](https://read.significanthobbies.com/changelog): Verified product history
-- [Login](https://read.significanthobbies.com/login): Sign in
+- [Login](https://read.significanthobbies.com/login): Google sign-in boundary
+- [Source](https://github.com/Significant-Hobbies/reader): Public repository
 
 ## Machine surfaces
 
-- [Agent catalog](https://read.significanthobbies.com/api/ai): JSON inventory of public surfaces
-- [OpenAPI spec](https://read.significanthobbies.com/openapi.json): OpenAPI 3.1 specification
-- [Homepage markdown](https://read.significanthobbies.com/index.md): Product brief without JS
-- [Full agent brief](https://read.significanthobbies.com/llms-full.txt): Complete product and privacy context
-- [HTML sitemap](https://read.significanthobbies.com/sitemap.xml): Canonical public pages
-- [This index](https://read.significanthobbies.com/llms.txt)
+- [Full agent brief](https://read.significanthobbies.com/llms-full.txt)
+- [Homepage Markdown](https://read.significanthobbies.com/index.md)
+- [Agent catalog](https://read.significanthobbies.com/api/ai)
+- [AI catalog](https://read.significanthobbies.com/.well-known/ai-catalog.json)
+- [Agent skill index](https://read.significanthobbies.com/.well-known/agent-skills/index.json)
+- [Reader source workflow](https://read.significanthobbies.com/skill.md)
+- [Access and pricing state](https://read.significanthobbies.com/pricing.md)
+- [OpenAPI](https://read.significanthobbies.com/openapi.json)
+- [Sitemap](https://read.significanthobbies.com/sitemap.xml)
+- [Robots](https://read.significanthobbies.com/robots.txt)
 
-## Developer docs
+## Agent guidance
 
-- [OpenAPI specification](https://read.significanthobbies.com/openapi.json): Full API surface description (OpenAPI 3.1)
-- [Agent catalog](https://read.significanthobbies.com/api/ai): JSON inventory of public agent surfaces
-
-## CLI
-
-```bash
-# Fetch the agent catalog
-curl -s https://read.significanthobbies.com/api/ai | jq .
-
-# Get the OpenAPI spec
-curl -s https://read.significanthobbies.com/openapi.json | jq .
-
-# Fetch the homepage as markdown
-curl -s -H 'Accept: text/markdown' https://read.significanthobbies.com/
-```
-
-## Optional
-
-- [Foundry](https://sassmaker.com): Parent fleet showcase
+- Personal libraries and authenticated APIs are private and are not agent-indexed.
+- The public OpenAPI document describes discovery surfaces, not an unauthenticated library API.
+- Use the Reader source workflow to decide whether a source belongs in this product and to guide a human through the capture-to-reading loop.

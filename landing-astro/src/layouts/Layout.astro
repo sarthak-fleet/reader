@@ -7,7 +7,7 @@ interface Props {
   canonicalPath?: string;
 }
 
-const { title, description, canonicalPath = '/' } = Astro.props;
+const { title, canonicalPath = '/' } = Astro.props;
 
 const SITE_URL = 'https://read.significanthobbies.com';
 ---
@@ -17,43 +17,69 @@ const SITE_URL = 'https://read.significanthobbies.com';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0d0d0c" />
+    <meta name="theme-color" content="#f0eee6" />
 
     <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="application-name" content="Library Reader" />
+    <meta name="description" content={Astro.props.description} />
+    <meta name="application-name" content="Reader" />
 
     <link rel="canonical" href={new URL(canonicalPath, SITE_URL)} />
+    <link rel="alternate" type="text/markdown" href={new URL(canonicalPath === '/' ? '/index.md' : `${canonicalPath}.md`, SITE_URL)} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content={new URL(canonicalPath, SITE_URL)} />
-    <meta property="og:site_name" content="Library Reader" />
+    <meta property="og:site_name" content="Reader" />
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={`${SITE_URL}/icon.svg`} />
+    <meta property="og:description" content={Astro.props.description} />
+    <meta property="og:image" content={`${SITE_URL}/reader-opengraph.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={`${SITE_URL}/icon.svg`} />
+    <meta name="twitter:description" content={Astro.props.description} />
+    <meta name="twitter:image" content={`${SITE_URL}/reader-opengraph.png`} />
     <script
       is:inline
       type="application/ld+json"
       set:html={JSON.stringify({
         '@context': 'https://schema.org',
-        '@type': 'SoftwareApplication',
-        name: 'Library Reader',
-        url: SITE_URL,
-        description,
-        applicationCategory: 'ProductivityApplication',
-        operatingSystem: 'Web',
+        '@graph': [
+          {
+            '@type': 'Organization',
+            '@id': `${SITE_URL}/#publisher`,
+            name: 'Significant Hobbies',
+            url: 'https://significanthobbies.com/',
+            description: 'A family of maintained personal applications built around focused, private workflows.',
+            logo: `${SITE_URL}/icon.svg`,
+            founder: {
+              '@type': 'Person',
+              name: 'Sarthak Agrawal',
+              url: 'https://sarthakagrawal.dev/',
+            },
+            sameAs: [
+              'https://github.com/Significant-Hobbies',
+              'https://github.com/Significant-Hobbies/reader',
+            ],
+          },
+          {
+            '@type': 'WebSite',
+            '@id': `${SITE_URL}/#website`,
+            name: 'Reader',
+            url: SITE_URL,
+            description: Astro.props.description,
+            inLanguage: 'en',
+            publisher: { '@id': `${SITE_URL}/#publisher` },
+          },
+        ],
       })}
     />
   </head>
   <body class="antialiased">
     <slot />
+    <portfolio-project-strip current-project="reader"></portfolio-project-strip>
     <script
       is:inline
       src="https://sassmaker.com/project-strip.js"
@@ -64,6 +90,7 @@ const SITE_URL = 'https://read.significanthobbies.com';
       is:inline
       src="https://sassmaker.com/ai-chat-footer.js"
       data-name="Reader"
+      data-compose="false"
       defer
     ></script>
   </body>

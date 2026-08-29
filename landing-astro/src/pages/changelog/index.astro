@@ -39,19 +39,20 @@ const releases = [
 ---
 
 <Layout
-  title="Changelog — Library Reader"
-  description="Meaningful improvements to Library Reader’s capture, reading, annotation, and research workflows."
+  title="Reader changelog — meaningful product improvements"
+  description="Verified improvements to Reader’s capture, reading, annotation, retrieval, and reliability workflows."
   canonicalPath="/changelog"
 >
   <div class="page">
     <header class="header">
       <div class="header-inner">
         <a class="brand" href="/">
-          <span class="brand-mark" aria-hidden="true">L</span>
-          <span>Library Reader</span>
+          <span class="brand-mark" aria-hidden="true">R</span>
+          <span>Reader</span>
         </a>
         <nav class="nav-links" aria-label="Site">
-          <a href="/#features">Features</a>
+          <a href="/#loop">The loop</a>
+          <a href="/#library">Library</a>
           <a href="/faq">FAQ</a>
           <a aria-current="page" href="/changelog">Changelog</a>
         </nav>
@@ -64,7 +65,7 @@ const releases = [
         <span class="eyebrow">Product history</span>
         <h1>Changelog</h1>
         <p>
-          Meaningful improvements to saving, reading, annotating, and revisiting your research.
+          Verified improvements to saving, reading, annotating, and returning to useful sources.
         </p>
         <nav aria-label="Project links">
           <a href={`${repository}/issues`}>Roadmap</a>
@@ -94,5 +95,23 @@ const releases = [
         }
       </ol>
     </main>
+
+    <footer class="site-footer">
+      <div>
+        <a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true">R</span><span>Reader</span></a>
+        <p>A maintained personal research library for turning saved sources into working knowledge.</p>
+      </div>
+      <div class="footer-state">
+        <span>Current state</span>
+        <p>Personal-use · maintenance-first · no public checkout</p>
+      </div>
+      <nav aria-label="Footer">
+        <a href="/about">About</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/faq">FAQ</a>
+        <a href={`${repository}/issues`}>Roadmap</a>
+        <a href={repository}>Source</a>
+      </nav>
+    </footer>
   </div>
 </Layout>

@@ -1,41 +1,56 @@
+---
+title: Reader FAQ
+description: Practical product, privacy, AI, extension, access, and commercial-state answers for Reader.
+canonical: https://read.significanthobbies.com/faq
+updated: 2026-08-28
+---
+
 # Reader FAQ
 
-Reader is a personal research library for capturing web articles and PDFs,
-reading without distractions, preserving highlights and notes, and using AI
-over sources you choose.
+## What is Reader for?
 
-## Capture and reading
+Reader turns a saved article or PDF into a focused place to read, annotate,
+revisit, and discuss it. It is designed for material that deserves more than a
+bookmark.
 
-Paste an article URL or use the Chrome extension to save the current page.
-Reader cleans web pages with Mozilla Readability. Uploaded PDFs join the same
-library and have their text extracted so they can be searched and discussed.
+## What can I save?
 
-## Organisation
+Paste a web article URL or upload a PDF. Mozilla Readability prepares web
+articles for a cleaner reading view, and PDF text is extracted for search and
+source-grounded discussion.
 
-Tags provide cross-cutting labels, lists group related sources, and boards give
-projects a Kanban-style workflow such as “to read,” “reading,” and “done.”
-Full-text search covers saved article bodies, PDF text, titles, and notes.
+## Do I need an account?
 
-## Highlights, notes, and progress
+No account is required for the browser-local path. Google sign-in opens the
+account-backed library, where saved material is isolated per user and PDFs are
+stored behind an ownership-enforcing proxy.
 
-Highlights anchor to the selected text so they persist across visits. Notes
-live beside the source, and boards can track reading progress across a research
-project.
+## Is my library public?
 
-## AI assistance
+No. Saved articles, PDFs, annotations, lists, boards, and AI conversations are
+private by default. A public article or board requires an explicit share action.
 
-Reader can summarize an open article or PDF and answer questions using its
-extracted text. You can bring an OpenAI, Anthropic, or Gemini key stored in the
-browser, use the Free AI gateway, or use the local development bridge. Reader
-does not store browser-held provider keys on its server.
+## How does AI work?
 
-## Accounts and privacy
+Reader can summarize the open source and answer questions about it. The app can
+use the Fleet AI gateway or browser-held OpenAI, Anthropic, or Gemini BYOK
+credentials. BYOK credentials are not persisted server-side.
 
-The browser-local library works without an account. Google sign-in enables the
-account-backed library and sync. Saved articles, PDFs, annotations, lists,
-boards, and AI conversations remain private and are excluded from the public
-sitemap and agent catalog.
+## Can I install the Chrome extension?
 
-[Open Reader](https://read.significanthobbies.com/) ·
-[Sign in](https://read.significanthobbies.com/login) ·
+The MV3 companion exists in the source repository and can be loaded as an
+unpacked extension for local use. Public browser-store distribution is deferred.
+
+## Can I export my data?
+
+Yes. Reader includes a JSON export for account-scoped articles, boards, and
+lists.
+
+## Is Reader paid?
+
+There is no public Reader plan or checkout. The repository does not establish a
+permanent free promise or a paid offer.
+
+[Open Reader](https://read.significanthobbies.com/library) ·
+[Try the sample](https://read.significanthobbies.com/sample) ·
 [View the changelog](https://read.significanthobbies.com/changelog)

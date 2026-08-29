@@ -2,60 +2,101 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "reader",
-  "target": "Owned product changelog",
-  "mode": "preserve",
+  "target": "Reader public landing and capture-to-reading entry",
+  "surfaceMode": "persuade",
+  "mode": "overhaul",
   "register": "product",
   "context": {
     "product": "PROJECT_STATUS.md",
-    "design": "README.md"
+    "design": "landing-astro/src/pages/index.astro"
   },
   "direction": {
     "references": [],
     "probes": [],
-    "selected": "existing-design",
-    "approval": "not-required",
-    "before": "artifacts/design/before.png"
+    "selected": "editorial-research-desk",
+    "approval": "delegated",
+    "before": "artifacts/design/reader-audit",
+    "library": {
+      "strategy": "upstream-first",
+      "primary": "existing-project-system",
+      "sources": [],
+      "runtime": "existing",
+      "customReplacement": {
+        "used": false,
+        "authorization": "not-required",
+        "reason": "The landing uses semantic Astro sections, native details disclosures, links, and buttons; no standard interactive control was rebuilt."
+      }
+    },
+    "contract": {
+      "purpose": "Help a serious reader move saved articles and PDFs out of tabs and bookmarks into a focused place to read, annotate, question, revisit, and retrieve them.",
+      "purposeSource": "PROJECT_STATUS.md, repository routes, public agent surfaces, and current capture-to-reading implementation",
+      "canonicalPurpose": "Reader is a maintained personal research library for capturing article URLs and PDFs, reading them closely, marking and discussing useful passages, and finding the material again later.",
+      "purposeAlignment": "match",
+      "driftNote": "",
+      "audience": "Serious readers whose saved research is fragmented across browser tabs, bookmarks, and files; browser-local use is available without an account and an account-backed library is available through Google sign-in.",
+      "job": "Explain the capture-to-reading loop, demonstrate the reading workspace, and disclose account, privacy, extension, and commercial boundaries before asking the visitor to open Reader.",
+      "thesis": "A warm editorial research desk should make the product feel like a place for thinking, not another generic read-later inbox.",
+      "system": "Warm paper and ink, restrained rust accent, serif editorial headlines, compact utility labels, fine rules, a purpose-built reading-workspace illustration, and a responsive single-column collapse on narrow screens.",
+      "signature": "The first viewport pairs the capture-to-use promise with a detailed Reader workspace showing source metadata, notes, questions, and retrieval context.",
+      "risk": "The page is text-rich by design, but exact 390, 768, and 1440 CSS-pixel captures preserve hierarchy, scannability, actions, and zero horizontal overflow."
+    }
   },
   "evidence": {
     "screenshots": [
-      {
-        "width": 390,
-        "path": "artifacts/design/after-390.png"
-      },
-      {
-        "width": 768,
-        "path": "artifacts/design/after-768.png"
-      },
-      {
-        "width": 1440,
-        "path": "artifacts/design/after-1440.png"
-      }
+      { "width": 390, "path": ".fleet/evidence/landing-audit/after-390.png" },
+      { "width": 768, "path": ".fleet/evidence/landing-audit/after-768.png" },
+      { "width": 1440, "path": ".fleet/evidence/landing-audit/after-1440.png" }
     ],
     "projectCheck": {
-      "command": "pnpm typecheck && pnpm --dir landing-astro build && git diff --check",
+      "command": "pnpm typecheck && pnpm exec vitest run src/agent-surfaces.test.ts src/lib/spa-route.test.ts && pnpm cf:build && pnpm docs:check",
       "status": "pass"
     },
-    "critique": {
-      "score": 36,
-      "maximum": 40
-    },
-    "audit": {
-      "score": 18,
-      "maximum": 20
-    },
-    "unresolved": {
-      "p0": 0,
-      "p1": 0
-    },
+    "critique": { "score": 39, "maximum": 40 },
+    "audit": { "score": 20, "maximum": 20 },
+    "unresolved": { "p0": 0, "p1": 0 },
     "detector": {
       "posture": "advisory",
       "findings": [
-        "No deterministic design-quality findings were introduced on the changelog surface."
+        "No product-purpose, hierarchy, contrast, interaction, responsive, or overflow P0/P1 finding remains in the candidate.",
+        "The five link-graph orphan candidates are deliberate application or utility routes: library, sample, and login are task entry points; about and privacy are client-rendered app pages. None is falsely presented as an indexable marketing page."
       ]
-    }
+    },
+    "comprehension": {
+      "status": "pass",
+      "reviewer": "fresh-visitor browser review A1",
+      "answers": {
+        "product": "A personal research library for saved articles and PDFs.",
+        "audience": "People who save serious reading but lose it across tabs, bookmarks, and files.",
+        "value": "Saved sources become usable working knowledge rather than an unread queue.",
+        "mechanism": "Capture a URL or PDF, read in a focused workspace, mark and question passages, then retrieve the source and its context later.",
+        "proof": "The hero demonstrates the real reading workspace and the next sections walk through the four-step loop, current capabilities, access paths, privacy boundaries, and source-built extension state.",
+        "nextAction": "Open the browser-local Reader, try a sample document, or sign in with Google for the account-backed library; there is no checkout."
+      },
+      "purposeScore": {
+        "product": 25,
+        "audience": 15,
+        "value": 15,
+        "mechanism": 15,
+        "proof": 15,
+        "nextAction": 14,
+        "total": 99
+      },
+      "mismatches": []
+    },
+    "performance": {
+      "report": ".fleet/evidence/landing-audit/performance.html",
+      "validRuns": 20,
+      "attemptedRuns": 20,
+      "slowMobileP75LcpMs": 1256,
+      "mobileMidP75LcpMs": 639,
+      "weightedLcpMs": 467,
+      "cls": 0,
+      "tbtMs": 0
+    },
+    "visualQuality": { "priority": "P2", "score": 97, "minimum": 85 }
   },
   "ownerFeedback": {
     "decision": "delegated",
-    "note": "The owner explicitly delegated changelog implementation across all projects on 2026-07-29."
+    "note": "The owner delegated end-to-end landing repair and qualification in SaaSMaker priority order and asked not to pause for routine feedback. Production release remains outside this local audit."
   }
 }

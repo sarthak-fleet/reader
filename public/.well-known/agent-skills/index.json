@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "reader-source-workflow",
+      "type": "skill-md",
+      "description": "Decide whether a web article or PDF belongs in Reader and guide a person through capture, focused reading, annotation, and retrieval without accessing a private library.",
+      "url": "/.well-known/agent-skills/reader-source-workflow/SKILL.md",
+      "digest": "sha256:f3dfccbb52edb447545f94b837e478693e0f0b94d148eb6f8e6a5fd855f4d926"
+    }
+  ]
+}

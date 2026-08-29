@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 
 import { handleAgentEdge } from './agent-edge.mjs';
 import { createAuth } from './lib/auth';
+import { isSpaRoute } from './lib/spa-route';
 import type { WorkerEnv } from './lib/worker-env';
 import { bindWorkerEnv } from './worker/bind-env';
 import aiRoutes from './worker/routes/ai';
@@ -25,6 +26,12 @@ const SECURITY_HEADERS: Record<string, string> = {
 };
 
 const AUTH_COOKIE_FRAGMENTS = ['session_token', 'session-token'];
+const MARKDOWN_ALTERNATES: Record<string, string> = {
+  '/': '/index.md',
+  '/faq': '/faq.md',
+  '/changelog': '/changelog.md',
+  '/login': '/login.md',
+};
 
 const api = new Hono<{ Bindings: WorkerEnv }>();
 
@@ -91,6 +98,10 @@ function withSecurityHeaders(response: Response, pathname: string): Response {
   if (contentType.includes('text/html')) {
     headers.set('Cache-Control', 'public, max-age=300, s-maxage=600, stale-while-revalidate=86400');
     if (pathname === '/login') headers.set('X-Robots-Tag', 'noindex, follow');
+    const markdownAlternate = MARKDOWN_ALTERNATES[pathname];
+    if (markdownAlternate) {
+      headers.set('Link', `<${markdownAlternate}>; rel="alternate"; type="text/markdown"`);
+    }
     // Add Vary: Accept for pages that have markdown alternates.
     const existingVary = headers.get('Vary');
     headers.set('Vary', existingVary ? `${existingVary}, Accept` : 'Accept, Accept-Encoding');
@@ -107,7 +118,7 @@ export default {
     const url = new URL(request.url);
 
     // Fleet agent indexing (GEO) — before SPA/ASSETS fallback
-    const agent = handleAgentEdge(request);
+    const agent = await handleAgentEdge(request, env);
     if (agent) return agent;
 
     if (url.pathname.startsWith('/api/')) {
@@ -138,6 +149,10 @@ export default {
     if (url.pathname === '/') {
       const landing = await env.ASSETS.fetch(new Request(new URL('/index.html', url), request));
       return landing.ok ? withSecurityHeaders(landing, url.pathname) : assetResponse;
+    }
+
+    if (!isSpaRoute(url.pathname)) {
+      return assetResponse;
     }
 
     // Assets serves app.html at /app; fetching /app.html returns 307 (not ok).

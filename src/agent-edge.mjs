@@ -1,257 +1,186 @@
-/**
- * Portable agent-edge handler — copy or generate into each product.
- * Spec: fleet-ops/docs/agent-indexing-standard.md
- *
- * Usage in worker.mjs (before openNext.fetch):
- *   import { handleAgentEdge } from './agent-edge.mjs'
- *   const agent = handleAgentEdge(request)
- *   if (agent) return agent
- */
+import staticCatalog from '../public/api-ai.json' with { type: 'json' };
 
-/** @type {{ name: string, url: string, llmsTxt: string, llmsFullTxt?: string, indexMd: string, catalog: object }} */
-// biome-ignore format: generated payload from apply-agent-surfaces (JSON keys/quotes)
+const PRODUCT_ORIGIN = 'https://read.significanthobbies.com';
+
 export const AGENT_SURFACE = {
-  "name": "Reader",
-  "url": "https://read.significanthobbies.com",
-  "llmsFullTxt": "# Reader — full agent brief\n\nResearch library: capture, annotate, and AI-chat over your reading — private by default.\n\n## Index\n\n# Reader\n\nResearch library for capture, annotation, and AI chat over your reading.\n\n## Privacy\n\nPersonal libraries require auth and are not agent-indexed. Public marketing surfaces only.\n\n## Agent entrypoints\n\n- https://read.significanthobbies.com/llms.txt\n- https://read.significanthobbies.com/api/ai\n- https://read.significanthobbies.com/index.md\n\n## Product links\n\n- Home: https://read.significanthobbies.com/ — App (auth for library)\n- FAQ: https://read.significanthobbies.com/faq — Frequently asked questions\n- Changelog: https://read.significanthobbies.com/changelog — Verified product history\n- Login: https://read.significanthobbies.com/login — Sign in\n\n## Machine surfaces\n\n- https://read.significanthobbies.com/llms.txt\n- https://read.significanthobbies.com/llms-full.txt\n- https://read.significanthobbies.com/api/ai\n- https://read.significanthobbies.com/index.md\n- https://read.significanthobbies.com/sitemap.xml\n- https://read.significanthobbies.com/robots.txt\n\n## Contact / fleet\n\n- Fleet: https://sassmaker.com\n- Agent email for directory verification: sarthakagrawal@agentmail.to\n",
-  "llmsTxt": "# Reader\n\n> Research library: capture, annotate, and AI-chat over your reading — private by default.\n\n## When to use this\n\n- Best fit: capturing web articles and PDFs for later reading, annotation, and AI-assisted summarization\n- Best fit: private research libraries with tag/list/board organization and full-text search\n- Not a fit: public bookmark sharing or social reading platforms\n- Not a fit: real-time collaborative document editing\n\n## Product\n\n- [Home](https://read.significanthobbies.com/): App (auth for library)\n- [FAQ](https://read.significanthobbies.com/faq): Frequently asked questions\n- [Changelog](https://read.significanthobbies.com/changelog): Verified product history\n- [Login](https://read.significanthobbies.com/login): Sign in\n\n## Machine surfaces\n\n- [Agent catalog](https://read.significanthobbies.com/api/ai): JSON inventory of public surfaces\n- [OpenAPI spec](https://read.significanthobbies.com/openapi.json): OpenAPI 3.1 specification\n- [Homepage markdown](https://read.significanthobbies.com/index.md): Product brief without JS\n- [Full agent brief](https://read.significanthobbies.com/llms-full.txt): Complete product and privacy context\n- [HTML sitemap](https://read.significanthobbies.com/sitemap.xml): Canonical public pages\n- [This index](https://read.significanthobbies.com/llms.txt)\n\n## Developer docs\n\n- [OpenAPI specification](https://read.significanthobbies.com/openapi.json): Full API surface description (OpenAPI 3.1)\n- [Agent catalog](https://read.significanthobbies.com/api/ai): JSON inventory of public agent surfaces\n\n## CLI\n\n```bash\n# Fetch the agent catalog\ncurl -s https://read.significanthobbies.com/api/ai | jq .\n\n# Get the OpenAPI spec\ncurl -s https://read.significanthobbies.com/openapi.json | jq .\n\n# Fetch the homepage as markdown\ncurl -s -H 'Accept: text/markdown' https://read.significanthobbies.com/\n```\n\n## Optional\n\n- [Foundry](https://sassmaker.com): Parent fleet showcase\n",
-  "indexMd": "# Reader\n\nResearch library for capture, annotation, and AI chat over your reading.\n\n## Privacy\n\nPersonal libraries require auth and are not agent-indexed. Public marketing surfaces only.\n\n## Agent entrypoints\n\n- https://read.significanthobbies.com/llms.txt\n- https://read.significanthobbies.com/api/ai\n- https://read.significanthobbies.com/index.md\n",
-  "catalog": {
-    "name": "Reader",
-    "version": "1",
-    "url": "https://read.significanthobbies.com",
-    "llms": "https://read.significanthobbies.com/llms.txt",
-    "llmsFull": "https://read.significanthobbies.com/llms-full.txt",
-    "sitemap": "https://read.significanthobbies.com/sitemap.xml",
-    "robots": "https://read.significanthobbies.com/robots.txt",
-    "markdown": {
-      "suffix": ".md",
-      "negotiation": true
-    },
-    "openapi": "https://read.significanthobbies.com/openapi.json",
-    "surfaces": [
-      {
-        "id": "home",
-        "url": "https://read.significanthobbies.com/",
-        "md": "https://read.significanthobbies.com/index.md",
-        "kind": "spa",
-        "description": "Product home"
-      },
-      {
-        "id": "faq",
-        "url": "https://read.significanthobbies.com/faq",
-        "md": "https://read.significanthobbies.com/faq.md",
-        "kind": "static",
-        "description": "Frequently asked questions"
-      },
-      {
-        "id": "changelog",
-        "url": "https://read.significanthobbies.com/changelog",
-        "md": "https://read.significanthobbies.com/changelog.md",
-        "kind": "static",
-        "description": "Verified product history"
-      },
-      {
-        "id": "login",
-        "url": "https://read.significanthobbies.com/login",
-        "md": "https://read.significanthobbies.com/login.md",
-        "kind": "auth",
-        "description": "Sign in"
-      }
-    ],
-    "auth": {
-      "public": true,
-      "notes": "Auth-walled app routes are not agent-indexed unless listed here."
-    }
-  }
+  name: 'Reader',
+  url: PRODUCT_ORIGIN,
+  catalog: staticCatalog,
 };
 
-const PRODUCT_ORIGIN = AGENT_SURFACE.url;
+const ROUTE_MARKDOWN = new Map([
+  ['/', '/index.md'],
+  ['/faq', '/faq.md'],
+  ['/changelog', '/changelog.md'],
+  ['/login', '/login.md'],
+]);
 
 const OPENAPI_SPEC = {
   openapi: '3.1.0',
   info: {
-    title: 'Reader public API',
-    version: '1.0.0',
+    title: 'Reader public discovery API',
+    version: '2.0.0',
     description:
-      'Reader is a personal research library: capture web articles and PDFs, read and annotate them, organise with tags/lists/boards, search, and AI-chat or auto-summarise. The public web API exposes read-only agent surfaces: the agent catalog, sitemap, llms.txt, and per-page markdown alternates. Personal libraries require auth and are not agent-indexed.',
-    contact: { name: 'Reader', url: PRODUCT_ORIGIN },
+      'Read-only discovery surfaces for Reader product truth, public Markdown, access state, and agent guidance. Personal libraries and authenticated APIs are private and are not described as public agent operations.',
+    contact: {
+      name: 'Reader',
+      url: PRODUCT_ORIGIN,
+    },
   },
   servers: [{ url: PRODUCT_ORIGIN }],
-  tags: [{ name: 'agent-surfaces', description: 'Machine-readable public surfaces' }],
+  tags: [
+    {
+      name: 'discovery',
+      description: 'Public, read-only product and agent discovery surfaces.',
+    },
+  ],
   paths: {
-    '/api/ai': {
-      get: {
-        operationId: 'getAgentCatalog',
-        tags: ['agent-surfaces'],
-        summary: 'Agent catalog',
-        description: 'JSON inventory of public agent surfaces.',
-        responses: {
-          200: {
-            description: 'Agent catalog',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  description: 'Bounded inventory of public agent surfaces.',
-                },
-              },
-            },
-          },
-          404: {
-            description: 'Not found',
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiError' } } },
-          },
-        },
-      },
-    },
-    '/llms.txt': {
-      get: {
-        operationId: 'getLlmsTxt',
-        tags: ['agent-surfaces'],
-        summary: 'llms.txt index',
-        description:
-          'Concise, human-and-agent-readable index of the site and its machine surfaces.',
-        responses: {
-          200: {
-            description: 'Markdown index',
-            content: { 'text/plain': { schema: { type: 'string' } } },
-          },
-          404: {
-            description: 'Not found',
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiError' } } },
-          },
-        },
-      },
-    },
-    '/sitemap.xml': {
-      get: {
-        operationId: 'getSitemap',
-        tags: ['agent-surfaces'],
-        summary: 'Sitemap',
-        description: 'XML sitemap of public, agent-readable routes.',
-        responses: {
-          200: {
-            description: 'XML sitemap',
-            content: { 'application/xml': { schema: { type: 'string' } } },
-          },
-          404: {
-            description: 'Not found',
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiError' } } },
-          },
-        },
-      },
-    },
-    '/openapi.json': {
-      get: {
-        operationId: 'getOpenApiSpec',
-        tags: ['agent-surfaces'],
-        summary: 'OpenAPI specification',
-        description: 'This document: a machine-readable description of the public agent API.',
-        responses: {
-          200: {
-            description: 'OpenAPI 3.1 spec',
-            content: { 'application/json': { schema: { type: 'object' } } },
-          },
-          404: {
-            description: 'Not found',
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiError' } } },
-          },
-        },
-      },
-    },
-  },
-  components: {
-    schemas: {
-      ApiError: {
-        type: 'object',
-        description: 'Error response for failed API requests.',
-        properties: {
-          error: {
-            type: 'object',
-            properties: {
-              code: { type: 'string', example: 'not_found' },
-              message: { type: 'string', example: 'Unknown API path: /api/unknown' },
-              path: { type: 'string', example: '/api/unknown' },
-            },
-            required: ['code', 'message', 'path'],
-          },
-        },
-        required: ['error'],
-      },
-    },
+    '/api/ai': discoveryOperation(
+      'getAgentCatalog',
+      'Get the Reader agent catalog',
+      'application/json'
+    ),
+    '/llms.txt': discoveryOperation(
+      'getLlmsIndex',
+      'Get the concise Reader agent index',
+      'text/plain'
+    ),
+    '/llms-full.txt': discoveryOperation(
+      'getFullAgentBrief',
+      'Get the complete public Reader agent brief',
+      'text/plain'
+    ),
+    '/index.md': discoveryOperation(
+      'getHomepageMarkdown',
+      'Get Reader purpose and current product truth as Markdown',
+      'text/markdown'
+    ),
+    '/pricing.md': discoveryOperation(
+      'getPricingState',
+      'Get the current Reader access and commercial state',
+      'text/markdown'
+    ),
+    '/agents.md': discoveryOperation(
+      'getAgentInstructions',
+      'Get public Reader agent instructions and boundaries',
+      'text/markdown'
+    ),
+    '/skill.md': discoveryOperation(
+      'getReaderSourceWorkflow',
+      'Get the Reader source-workflow skill',
+      'text/markdown'
+    ),
+    '/.well-known/ai-catalog.json': discoveryOperation(
+      'getAiCatalog',
+      'Get the standards-shaped Reader AI catalog',
+      'application/json'
+    ),
+    '/.well-known/agent-skills/index.json': discoveryOperation(
+      'getAgentSkillIndex',
+      'Get the digest-verified Reader agent-skill index',
+      'application/json'
+    ),
+    '/sitemap.xml': discoveryOperation(
+      'getSitemap',
+      'Get the public Reader HTML sitemap',
+      'application/xml'
+    ),
+    '/openapi.json': discoveryOperation(
+      'getOpenApiSpec',
+      'Get this public discovery specification',
+      'application/json'
+    ),
   },
 };
 
+function discoveryOperation(operationId, summary, contentType) {
+  return {
+    get: {
+      operationId,
+      tags: ['discovery'],
+      summary,
+      responses: {
+        200: {
+          description: summary,
+          content: {
+            [contentType]: {
+              schema: contentType.includes('json') ? { type: 'object' } : { type: 'string' },
+            },
+          },
+        },
+        404: {
+          description: 'Not found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: { type: 'string' },
+                  path: { type: 'string' },
+                },
+                required: ['error', 'path'],
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+}
+
 /**
+ * Serve agent discovery before the SPA and asset fallback.
+ *
  * @param {Request} request
- * @returns {Response | null}
+ * @param {{ ASSETS: { fetch(request: Request): Promise<Response> } }} env
+ * @returns {Promise<Response | null>}
  */
-export function handleAgentEdge(request) {
+export async function handleAgentEdge(request, env) {
   if (request.method !== 'GET' && request.method !== 'HEAD') return null;
+
   const url = new URL(request.url);
-  const path = url.pathname === '' ? '/' : url.pathname;
+  const path = normalizePath(url.pathname);
+  const origin = resolveOrigin(request, url);
 
   if (path === '/openapi.json' || path === '/openapi.yaml') {
-    return json(OPENAPI_SPEC);
+    return json(rebindUrls(OPENAPI_SPEC, origin), request.method);
   }
 
-  // JSON errors for unknown /api/* paths (excluding /api/ai which is handled below).
-  if (path.startsWith('/api/') && path !== '/api/ai') {
-    return jsonError(404, 'not_found', `Unknown API path: ${path}`, path);
-  }
-
-  if (path === '/llms.txt') {
-    return text(AGENT_SURFACE.llmsTxt, 'text/plain; charset=utf-8');
-  }
-  if (path === '/llms-full.txt' && AGENT_SURFACE.llmsFullTxt) {
-    return text(AGENT_SURFACE.llmsFullTxt, 'text/plain; charset=utf-8');
-  }
-  if (path === '/index.md') {
-    return text(AGENT_SURFACE.indexMd, 'text/markdown; charset=utf-8');
-  }
   if (path === '/api/ai') {
-    // Re-bind origin so preview/custom domains stay correct
-    const catalog = {
-      ...AGENT_SURFACE.catalog,
-      url: url.origin,
-      llms: `${url.origin}/llms.txt`,
-      llmsFull: `${url.origin}/llms-full.txt`,
-      sitemap: AGENT_SURFACE.catalog.sitemap
-        ? String(AGENT_SURFACE.catalog.sitemap).replace(AGENT_SURFACE.url, url.origin)
-        : `${url.origin}/sitemap.xml`,
-      openapi: `${url.origin}/openapi.json`,
-      surfaces: (AGENT_SURFACE.catalog.surfaces || []).map((s) => ({
-        ...s,
-        url: s.url ? String(s.url).replace(AGENT_SURFACE.url, url.origin) : s.url,
-        md: s.md ? String(s.md).replace(AGENT_SURFACE.url, url.origin) : s.md,
-      })),
-    };
-    return json(catalog);
+    return json(rebindUrls(staticCatalog, origin), request.method);
   }
 
-  // Homepage markdown negotiation
-  if ((path === '/' || path === '') && wantsMarkdown(request)) {
-    return text(AGENT_SURFACE.indexMd, 'text/markdown; charset=utf-8', {
-      Link: '</index.md>; rel="alternate"; type="text/markdown"',
+  if (path === '/robots.txt') {
+    return serveReboundTextAsset(env, request, path, origin, 'text/plain; charset=utf-8');
+  }
+
+  if (path === '/sitemap.xml' || path === '/sitemap-index.xml' || path === '/sitemap-0.xml') {
+    return serveReboundTextAsset(env, request, path, origin, 'application/xml; charset=utf-8');
+  }
+
+  if (path === '/.well-known/ai-catalog.json') {
+    const catalog = await readJsonAsset(env, request, path);
+    return catalog ? json(rebindUrls(catalog, origin), request.method) : null;
+  }
+
+  if (path === '/api' || path.startsWith('/api/')) {
+    return jsonError(path, request.method);
+  }
+
+  const markdownPath = ROUTE_MARKDOWN.get(path);
+  if (markdownPath && (wantsMarkdown(request) || url.searchParams.get('mode') === 'agent')) {
+    return serveAsset(env, request, markdownPath, {
+      'Content-Type': 'text/markdown; charset=utf-8',
+      Link: `<${markdownPath}>; rel="alternate"; type="text/markdown"`,
       Vary: 'Accept',
     });
   }
 
-  // Agent-friendly 404: return a markdown recovery body for unknown paths
-  // when the client asks for markdown.
   if (wantsMarkdown(request) && !path.includes('.') && !path.startsWith('/api/')) {
-    return markdown404(path, request.method);
+    return markdown404(path, request.method, origin);
   }
 
   return null;
-}
-
-function wantsMarkdown(request) {
-  const accept = (request.headers.get('accept') || '').toLowerCase();
-  if (!accept.includes('text/markdown')) return false;
-  if (!accept.includes('text/html')) return true;
-  return accept.indexOf('text/markdown') < accept.indexOf('text/html');
 }
 
 function normalizePath(pathname) {
@@ -260,20 +189,130 @@ function normalizePath(pathname) {
   return withSlash.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
 }
 
-function markdown404(pathname, method) {
-  const path = normalizePath(pathname);
+function resolveOrigin(request, url) {
+  const forwardedHost = request.headers.get('x-forwarded-host')?.split(',')[0]?.trim();
+  const host = forwardedHost || request.headers.get('host')?.trim();
+  if (!host || !isTrustedPreviewHost(host)) return url.origin;
+
+  const forwardedProto = request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim();
+  const protocol =
+    forwardedProto === 'https' || forwardedProto === 'http'
+      ? forwardedProto
+      : url.protocol.replace(':', '');
+  return `${protocol}://${host}`;
+}
+
+function isTrustedPreviewHost(hostWithPort) {
+  const hostname = hostWithPort
+    .replace(/^\[/, '')
+    .replace(/\](:\d+)?$/, '')
+    .split(':')[0];
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1' ||
+    hostname.endsWith('.trycloudflare.com') ||
+    hostname.endsWith('.workers.dev') ||
+    hostname.endsWith('.example')
+  );
+}
+
+function wantsMarkdown(request) {
+  const accept = (request.headers.get('accept') || '').toLowerCase();
+  if (!accept.includes('text/markdown')) return isAgentUserAgent(request);
+  if (!accept.includes('text/html')) return true;
+  return accept.indexOf('text/markdown') < accept.indexOf('text/html');
+}
+
+function isAgentUserAgent(request) {
+  const userAgent = (request.headers.get('user-agent') || '').toLowerCase();
+  return [
+    'gptbot',
+    'chatgpt-user',
+    'claudebot',
+    'perplexitybot',
+    'google-extended',
+    'applebot-extended',
+    'ora-agent',
+    'deepseekbot',
+  ].some((agent) => userAgent.includes(agent));
+}
+
+async function serveAsset(env, request, pathname, extraHeaders = {}) {
+  const target = new URL(pathname, request.url);
+  const asset = await env.ASSETS.fetch(
+    new Request(target, {
+      method: request.method,
+      headers: request.headers,
+    })
+  );
+  if (!asset.ok) return asset;
+
+  const headers = new Headers(asset.headers);
+  for (const [name, value] of Object.entries(extraHeaders)) headers.set(name, value);
+  headers.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+  headers.set('X-Content-Type-Options', 'nosniff');
+
+  return new Response(request.method === 'HEAD' ? null : asset.body, {
+    status: asset.status,
+    statusText: asset.statusText,
+    headers,
+  });
+}
+
+async function readJsonAsset(env, request, pathname) {
+  const response = await serveAsset(env, request, pathname, {
+    'Content-Type': 'application/json; charset=utf-8',
+  });
+  if (!response.ok || request.method === 'HEAD') return null;
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+async function serveReboundTextAsset(env, request, pathname, origin, contentType) {
+  const target = new URL(pathname, request.url);
+  const asset = await env.ASSETS.fetch(new Request(target, { method: 'GET' }));
+  if (!asset.ok) return asset;
+
+  const body = (await asset.text()).replaceAll(PRODUCT_ORIGIN, origin);
+  return new Response(request.method === 'HEAD' ? null : body, {
+    status: 200,
+    headers: {
+      'Content-Type': contentType,
+      'Cache-Control': 'public, max-age=300, s-maxage=600',
+      'X-Content-Type-Options': 'nosniff',
+    },
+  });
+}
+
+function rebindUrls(value, origin) {
+  if (typeof value === 'string') return value.replaceAll(PRODUCT_ORIGIN, origin);
+  if (Array.isArray(value)) return value.map((item) => rebindUrls(item, origin));
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, rebindUrls(item, origin)])
+    );
+  }
+  return value;
+}
+
+function markdown404(path, method, origin) {
   const body = `# 404 — Not Found
 
-\`${path}\` does not exist on read.significanthobbies.com.
+\`${path}\` is not a public Reader route.
 
 ## Where to look next
 
-- [Home](${PRODUCT_ORIGIN}/)
-- [Sitemap](${PRODUCT_ORIGIN}/sitemap.xml)
-- [Agent index](${PRODUCT_ORIGIN}/llms.txt)
-- [Agent catalog (JSON)](${PRODUCT_ORIGIN}/api/ai)
-- [OpenAPI spec](${PRODUCT_ORIGIN}/openapi.json)
+- [Reader product truth](${origin}/index.md)
+- [Agent index](${origin}/llms.txt)
+- [Agent catalog](${origin}/api/ai)
+- [Sitemap](${origin}/sitemap.xml)
+- [OpenAPI](${origin}/openapi.json)
 `;
+
   return new Response(method === 'HEAD' ? null : body, {
     status: 404,
     headers: {
@@ -285,9 +324,9 @@ function markdown404(pathname, method) {
   });
 }
 
-function jsonError(status, code, message, path) {
-  return new Response(JSON.stringify({ error: { code, message, path } }), {
-    status,
+function jsonError(path, method) {
+  return new Response(method === 'HEAD' ? null : JSON.stringify({ error: 'not_found', path }), {
+    status: 404,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store',
@@ -299,23 +338,13 @@ function jsonError(status, code, message, path) {
   });
 }
 
-function text(body, type, extra = {}) {
-  return new Response(body, {
-    status: 200,
-    headers: {
-      'Content-Type': type,
-      'Cache-Control': 'public, max-age=300',
-      ...extra,
-    },
-  });
-}
-
-function json(data) {
-  return new Response(`${JSON.stringify(data, null, 2)}\n`, {
+function json(data, method = 'GET') {
+  return new Response(method === 'HEAD' ? null : `${JSON.stringify(data, null, 2)}\n`, {
     status: 200,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'public, max-age=300',
+      'Cache-Control': 'public, max-age=300, s-maxage=600',
+      'Access-Control-Allow-Origin': '*',
       'RateLimit-Limit': '120',
       'RateLimit-Remaining': '119',
       'RateLimit-Reset': '60',

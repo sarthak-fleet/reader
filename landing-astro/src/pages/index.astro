@@ -1,256 +1,294 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 
-const TITLE = 'Library Reader — save, read, highlight, and listen';
+const TITLE = 'Reader — turn saved sources into working knowledge';
 const DESCRIPTION =
-  'A personal research library for articles and PDFs. Clean typography, persistent highlights, text-to-speech, and AI chat over your own sources.';
+  'A personal research library for capturing articles and PDFs, reading without distractions, annotating evidence, and revisiting what matters.';
+
+const loop = [
+  {
+    number: '01',
+    title: 'Capture the source',
+    body: 'Paste an article URL or upload a PDF. Reader keeps the source and prepares it for focused reading.',
+  },
+  {
+    number: '02',
+    title: 'Read without the page',
+    body: 'Web clutter falls away. The text, document structure, reading controls, and your place remain.',
+  },
+  {
+    number: '03',
+    title: 'Mark what matters',
+    body: 'Highlight the exact passage, leave a note beside it, or listen when reading is not practical.',
+  },
+  {
+    number: '04',
+    title: 'Find the thought again',
+    body: 'Search the library, return through tags and lists, arrange a board, or question the open source with AI.',
+  },
+];
+
+const capabilities = [
+  [
+    'Sources',
+    'Web articles and PDFs live in the same library. PDF text is extracted for search and source-grounded discussion.',
+  ],
+  [
+    'Reading',
+    'A typography-first view keeps highlights, notes, reading progress, and text-to-speech beside the source.',
+  ],
+  [
+    'Retrieval',
+    'Full-text search, tags, lists, and boards give the same source more than one useful way back in.',
+  ],
+  [
+    'Assistance',
+    'Summaries and chat work over material you chose. Reader supports the Fleet gateway or browser-held BYOK keys.',
+  ],
+  [
+    'Feeds',
+    'Authenticated readers can import OPML and refresh RSS or Atom feeds manually, then save an item into the library.',
+  ],
+  [
+    'Portability',
+    'Account data can be exported as JSON. Public sharing is an explicit action, not the default state.',
+  ],
+];
 ---
 
 <Layout title={TITLE} description={DESCRIPTION}>
   <div class="page">
     <header class="header">
       <div class="header-inner">
-        <a class="brand" href="/">
-          <span class="brand-mark" aria-hidden="true">L</span>
-          <span>Library Reader</span>
+        <a class="brand" href="/" aria-label="Reader home">
+          <span class="brand-mark" aria-hidden="true">R</span>
+          <span>Reader</span>
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="#features">Features</a>
-          <a href="#how">How it works</a>
+          <a href="#loop">The loop</a>
+          <a href="#library">Library</a>
+          <a href="#boundary">Current state</a>
           <a href="/faq">FAQ</a>
-          <a href="/extension">Extension</a>
           <a href="/changelog">Changelog</a>
         </nav>
         <a class="btn-signin" href="/login">Sign in</a>
       </div>
     </header>
 
-    <section class="hero">
-      <div class="hero-inner">
+    <main>
+      <section class="hero">
         <div class="hero-copy">
-          <span class="eyebrow">Personal research library</span>
-          <h1>Save it, read it, highlight it, listen to it.</h1>
+          <p class="eyebrow"><span aria-hidden="true">✦</span> Personal research library</p>
+          <h1>Turn the things you save into things you can use.</h1>
           <p class="hero-lede">
-            One library for the articles and PDFs you actually want to read. Clean typography,
-            persistent highlights, text-to-speech, and AI chat over your own sources.
+            Reader is for people who save serious articles and PDFs, then lose them among browser
+            tabs and undifferentiated bookmarks. It gives each source a quiet place to read, mark,
+            question, and find again.
           </p>
           <div class="cta-row">
-            <a class="btn-primary" href="/library">
-              Save your first article
-              <span aria-hidden="true">→</span>
-            </a>
+            <a class="btn-primary" href="/library">Open Reader <span aria-hidden="true">↗</span></a>
+            <a class="btn-secondary" href="/sample">Try a sample document</a>
           </div>
-          <p class="fine">
-            No account needed — works in your browser right now.
-            <a href="/extension">Chrome extension available.</a>
-          </p>
+          <ul class="truth-row" aria-label="Current product state">
+            <li>Browser-local start</li>
+            <li>Google sign-in for the account library</li>
+            <li>No checkout</li>
+          </ul>
         </div>
 
-        <div class="library-preview" aria-label="Illustrative Library Reader view">
-          <div class="preview-head">
-            <span>Illustrative library</span>
-            <span>3 saved sources</span>
+        <div class="reader-window" aria-label="Illustration of Reader's article and annotation view">
+          <div class="window-bar">
+            <span class="window-label"><i aria-hidden="true"></i> reader / systems</span>
+            <span>8 min left</span>
           </div>
-          <div class="preview-body">
-            <p class="preview-kicker">Continue reading</p>
-            <h2>How durable systems earn trust</h2>
-            <p class="preview-meta">Article · 14 min · 3 highlights</p>
-            <blockquote>
-              “The useful part is not collecting more material. It is keeping the evidence close
-              enough to revisit.”
-            </blockquote>
-            <div class="preview-actions" aria-hidden="true">
-              <span>Highlight</span><span>Add note</span><span>Listen</span>
-            </div>
+          <div class="window-grid">
+            <aside class="source-rail" aria-label="Example source list">
+              <span class="rail-heading">Research set</span>
+              <span class="rail-item is-active"><b>01</b> Durable systems</span>
+              <span class="rail-item"><b>02</b> Interface memory</span>
+              <span class="rail-item"><b>03</b> Trust signals</span>
+              <span class="rail-count">3 sources · 7 notes</span>
+            </aside>
+            <article class="article-sheet">
+              <p class="article-kicker">Saved article · 14 min</p>
+              <h2>How durable systems earn trust</h2>
+              <p class="article-byline">A working excerpt for interface demonstration</p>
+              <p>
+                A useful research system does not ask you to remember where the evidence lived. It
+                keeps the source close enough to inspect again.
+              </p>
+              <p class="highlighted">
+                The goal is not a larger reading list. It is a shorter distance between a claim,
+                the passage behind it, and the note you made while thinking.
+              </p>
+              <p>
+                That distance becomes the difference between collecting material and building
+                understanding from it.
+              </p>
+            </article>
+            <aside class="margin-notes" aria-label="Example annotation panel">
+              <div class="note-tabs"><span class="is-active">Notes</span><span>Ask</span></div>
+              <div class="margin-note">
+                <span>NOTE 04</span>
+                <p>Evidence and interpretation should stay adjacent.</p>
+              </div>
+              <div class="ask-box">
+                <span>Ask this source</span>
+                <p>Where does the author separate collection from understanding?</p>
+                <b>↵</b>
+              </div>
+            </aside>
           </div>
-          <p class="preview-note">Example content only — your library renders your saved sources.</p>
+          <p class="window-caption">Illustrative interface — example text, not a customer document.</p>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="features" class="section">
-      <div class="section-head">
-        <h2>What it actually does</h2>
-        <p>Three things, kept deliberately small. No feed, no recommendations, no inbox.</p>
-      </div>
-      <div class="grid-3">
-        <article class="card">
-          <div class="card-icon" aria-hidden="true">01</div>
-          <h3>One library for articles and PDFs</h3>
-          <p>
-            Paste a URL and the page is cleaned with Mozilla Readability. Upload a PDF and it goes
-            into the same library, with text extraction for search and chat.
-          </p>
-        </article>
-        <article class="card">
-          <div class="card-icon" aria-hidden="true">02</div>
-          <h3>Highlight and annotate</h3>
-          <p>
-            A distraction-free reader view with persistent highlights and a side panel for notes.
-            Annotations anchor to the exact text you marked so they survive across visits.
-          </p>
-        </article>
-        <article class="card">
-          <div class="card-icon" aria-hidden="true">03</div>
-          <h3>Listen to anything you save</h3>
-          <p>
-            Hit Listen on an article or PDF and your browser reads it aloud — voice and rate are
-            controllable. The same control is available from the Chrome extension.
-          </p>
-        </article>
-      </div>
-    </section>
+      <section class="proof-strip" aria-label="Reader product summary">
+        <p><span>Input</span> Article URL or PDF</p>
+        <p><span>Working surface</span> Text, highlights, notes, audio</p>
+        <p><span>Way back</span> Search, tags, lists, boards</p>
+        <p><span>Default</span> Private</p>
+      </section>
 
-    <section id="demo" class="section section-bordered">
-      <div class="section-head">
-        <h2 class="section-head-inline"><span aria-hidden="true">✨</span> The reader view</h2>
-        <p>
-          Articles get cleaned into a typography-first layout. Select any text to add a note or send
-          it to AI. Press the Listen button to have the page read aloud.
-        </p>
-      </div>
-      <div class="demo-frame" aria-label="Reader layout sketch">
-        <div class="demo-bar">
-          <div class="demo-dots" aria-hidden="true">
-            <span class="demo-dot"></span>
-            <span class="demo-dot"></span>
-            <span class="demo-dot"></span>
-          </div>
-          <span>library / reader</span>
-          <span class="demo-listen">🎧 Listen</span>
+      <section id="loop" class="section loop-section">
+        <div class="section-heading">
+          <p class="section-index">01 / THE READING LOOP</p>
+          <h2>A saved tab is only an intention.</h2>
+          <p>
+            Reader earns its place after “save.” The product carries one source through attentive
+            reading and back into reach when the thought becomes useful.
+          </p>
         </div>
-        <div class="demo-grid">
-          <div class="demo-main">
-            <div class="demo-label">Article</div>
-            <div class="skeleton-title"></div>
-            <div class="skeleton-sub"></div>
-            <div class="skeleton-lines">
-              <div class="skeleton-line w97"></div>
-              <div class="skeleton-line w94"></div>
-              <div class="skeleton-line w60"></div>
-              <div class="skeleton-line w88"></div>
-              <div class="skeleton-line w92"></div>
-              <div class="skeleton-line w40"></div>
-            </div>
-          </div>
-          <aside class="demo-aside">
-            <div class="demo-label">Notes</div>
-            <div class="note-card">
-              <div class="note-line w75"></div>
-              <div class="note-line full"></div>
-              <div class="note-line w80"></div>
-            </div>
-            <div class="note-card">
-              <div class="note-line w50"></div>
-              <div class="note-line full"></div>
-            </div>
-          </aside>
+        <ol class="loop-grid">
+          {loop.map((step) => (
+            <li>
+              <span>{step.number}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section id="library" class="section library-section">
+        <div class="section-heading compact">
+          <p class="section-index">02 / ONE WORKING LIBRARY</p>
+          <h2>Keep the source, the mark, and the next question together.</h2>
         </div>
-      </div>
-      <p class="demo-caption">Layout sketch — your library renders your real content.</p>
-    </section>
+        <div class="library-ledger">
+          {capabilities.map(([title, body], index) => (
+            <article>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
-    <section id="how" class="section section-bordered">
-      <div class="section-head">
-        <h2>How it works</h2>
-        <p>Three steps from a URL to a library you keep coming back to.</p>
-      </div>
-      <div class="grid-3">
-        <article class="card">
-          <div class="step-num">1</div>
-          <h3>Save a source</h3>
-          <p>
-            Paste a link, drop a PDF, or use the Chrome extension to capture the current page in one
-            click.
-          </p>
-        </article>
-        <article class="card">
-          <div class="step-num">2</div>
-          <h3>Read, highlight, listen</h3>
-          <p>
-            Open it in the reader view. Highlight what matters, add notes in the side panel, or play
-            it back as audio.
-          </p>
-        </article>
-        <article class="card">
-          <div class="step-num">3</div>
-          <h3>Ask and revisit</h3>
-          <p>
-            Generate a summary, chat with the text using your own AI key, and come back to your
-            highlights any time.
-          </p>
-        </article>
-      </div>
-    </section>
+      <section class="section evidence-section">
+        <div class="evidence-quote">
+          <p class="section-index">03 / WHY IT EXISTS</p>
+          <blockquote>“I wanted any article or PDF to become a focused reading and research surface instead of another forgotten browser tab.”</blockquote>
+          <cite>— Product maker note</cite>
+        </div>
+        <div class="evidence-list">
+          <p><span>Capture</span> Mozilla Readability prepares saved web pages; PDF uploads join the same library.</p>
+          <p><span>Evidence</span> Highlights remain anchored to the passage that prompted them.</p>
+          <p><span>Return</span> Search and organisation operate over the material and notes already saved.</p>
+          <p><span>Scope</span> There is no social feed, recommendation engine, or paid team workspace.</p>
+        </div>
+      </section>
 
-    <section id="faq" class="faq">
-      <h2>FAQ</h2>
-      <p class="faq-intro">
-        A few common questions. <a href="/faq">See the full FAQ →</a>
-      </p>
-      <div class="faq-list">
-        <details class="faq-item">
-          <summary>Do I need an account to try it?</summary>
+      <section id="boundary" class="section boundary-section">
+        <div class="section-heading compact">
+          <p class="section-index">04 / CURRENT BOUNDARY</p>
+          <h2>Maintained for real use, not expansion for its own sake.</h2>
           <p>
-            No. The library works in your browser without signing in — articles, PDFs, highlights,
-            and notes are stored locally. Sign in with Google when you want to sync across devices.
+            Reader is a mature personal-use product in maintenance-first support. The owner is not
+            using it enough to justify speculative features, so future work is limited to problems
+            that block the capture-to-reading loop.
           </p>
-        </details>
-        <details class="faq-item">
-          <summary>Where are my PDFs stored?</summary>
-          <p>
-            For signed-in users, PDFs are uploaded to Cloudflare R2 and accessed through a proxy
-            that enforces ownership. In local mode, the PDF stays in your browser.
-          </p>
-        </details>
-        <details class="faq-item">
-          <summary>How does the AI chat work? Whose API key does it use?</summary>
-          <p>
-            You bring your own key — OpenAI, Anthropic, or Gemini — and it is stored in your
-            browser. There is also a gateway option and a local-AI mode for development. We never
-            proxy your key through a server.
-          </p>
-        </details>
-        <details class="faq-item">
-          <summary>What does the Chrome extension do?</summary>
-          <p>
-            It captures the page you are on (cleaned via Readability) and saves it to your library.
-            It also exposes the Listen control, so you can have any page read aloud without leaving
-            it.
-          </p>
-        </details>
-        <details class="faq-item">
-          <summary>Can I export my data?</summary>
-          <p>
-            Yes. The About page has an Export button that downloads every article, board, and list
-            scoped to your account as a single JSON file.
-          </p>
-        </details>
-      </div>
-    </section>
+        </div>
+        <div class="boundary-grid">
+          <article>
+            <p class="boundary-label">Without an account</p>
+            <h3>Start in this browser.</h3>
+            <p>Use the device-local path to capture and read without creating a Reader account.</p>
+          </article>
+          <article>
+            <p class="boundary-label">With Google sign-in</p>
+            <h3>Open the account-backed library.</h3>
+            <p>Saved material is isolated per user; PDFs are stored behind an ownership-enforcing proxy.</p>
+          </article>
+          <article>
+            <p class="boundary-label">Companion tooling</p>
+            <h3>The extension is source-built, not publicly distributed.</h3>
+            <p>The MV3 companion exists for local unpacked installs. A public browser-store release is deferred.</p>
+          </article>
+          <article>
+            <p class="boundary-label">Commercial state</p>
+            <h3>No public plan or checkout.</h3>
+            <p>The repository does not establish a permanent free promise or a paid offer, so this page invents neither.</p>
+          </article>
+        </div>
+      </section>
 
-    <section class="closing">
-      <div class="closing-inner">
-        <h2>Start your library</h2>
-        <p>
-          Save your first article or PDF. It works in your browser right now — sign in later if you
-          want to sync.
-        </p>
-        <a class="btn-primary" href="/library">
-          Save your first article
-          <span aria-hidden="true">→</span>
-        </a>
-        <p class="footer-links">
-          <a href="/about">About</a> · <a href="/privacy">Privacy</a> ·
-          <a href="/extension">Chrome extension</a> · <a href="/changelog">Changelog</a> ·
-          <a href="https://github.com/Significant-Hobbies/reader/issues">Roadmap</a> ·
-          <a href="https://github.com/Significant-Hobbies/reader">Source</a>
-        </p>
-      </div>
-    </section>
+      <section class="faq-preview">
+        <div>
+          <p class="section-index">05 / PRACTICAL QUESTIONS</p>
+          <h2>Before you put a source inside.</h2>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Does Reader publish what I save?</summary>
+            <p>No. Libraries are private by default. A shared article or board requires an explicit share action.</p>
+          </details>
+          <details class="faq-item">
+            <summary>What does AI see?</summary>
+            <p>AI features operate on the material you open and ask about. Browser-held BYOK credentials are used per request and are not stored server-side.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can I install the Chrome extension?</summary>
+            <p>The extension is currently available from source for local unpacked installation. Public browser-store distribution is deferred.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can I take my data out?</summary>
+            <p>Yes. Reader includes a JSON export for account-scoped articles, boards, and lists.</p>
+          </details>
+        </div>
+        <a class="text-link" href="/faq">Read the complete FAQ <span aria-hidden="true">→</span></a>
+      </section>
+
+      <section class="closing">
+        <div class="closing-inner">
+          <p class="section-index">OPEN THE LIBRARY</p>
+          <h2>Bring one source you mean to understand.</h2>
+          <p>Start in this browser, or sign in with Google for the account-backed library.</p>
+          <div class="cta-row centered">
+            <a class="btn-primary" href="/library">Open Reader <span aria-hidden="true">↗</span></a>
+            <a class="btn-secondary" href="/sample">Try the sample</a>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <footer class="site-footer">
-      Your reading list is not the same as your understanding. Library Reader helps with the gap.
+      <div>
+        <a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true">R</span><span>Reader</span></a>
+        <p>A maintained personal research library for turning saved sources into working knowledge.</p>
+      </div>
+      <div class="footer-state">
+        <span>Current state</span>
+        <p>Personal-use · maintenance-first · no public checkout</p>
+      </div>
+      <nav aria-label="Footer">
+        <a href="/about">About</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/changelog">Changelog</a>
+        <a href="https://github.com/Significant-Hobbies/reader/issues">Roadmap</a>
+        <a href="https://github.com/Significant-Hobbies/reader">Source</a>
+      </nav>
     </footer>
   </div>
 </Layout>

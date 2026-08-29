@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { AGENT_SURFACE } from './agent-edge.mjs';
+import { AGENT_SURFACE, handleAgentEdge } from './agent-edge.mjs';
 
 const readPublic = (path: string) => readFileSync(resolve(process.cwd(), 'public', path), 'utf8');
 const readRepo = (path: string) => readFileSync(resolve(process.cwd(), path), 'utf8');
@@ -48,14 +49,11 @@ describe('public agent surface parity', () => {
     }
   });
 
-  it('keeps auth-only surfaces out of the public HTML sitemap', () => {
+  it('keeps auth-only routes out of the public catalog and HTML sitemap', () => {
     const urls = new Set(sitemapUrls());
-    const authSurfaces = AGENT_SURFACE.catalog.surfaces.filter(
-      (surface) => surface.kind === 'auth'
-    );
-
-    expect(authSurfaces).not.toHaveLength(0);
-    for (const surface of authSurfaces) expect(urls).not.toContain(surface.url);
+    expect(AGENT_SURFACE.catalog.surfaces.map((surface) => surface.id)).not.toContain('login');
+    expect(urls).not.toContain('https://read.significanthobbies.com/login');
+    expect(AGENT_SURFACE.catalog.auth.notes).toContain('Personal libraries');
   });
 
   it('provides a substantive Markdown counterpart for every HTML surface', () => {
@@ -96,9 +94,107 @@ describe('public agent surface parity', () => {
     expect(llms).toContain(catalog.sitemap);
     expect(llms).toContain(catalog.llmsFull);
     expect(llms).toContain('/api/ai');
-    expect(AGENT_SURFACE.llmsTxt).toBe(llms);
-    expect(AGENT_SURFACE.llmsFullTxt).toBe(readPublic('llms-full.txt'));
-    expect(AGENT_SURFACE.catalog.surfaces).toEqual(JSON.parse(readPublic('api-ai.json')).surfaces);
+    expect(llms).toContain('/pricing.md');
+    expect(llms).toContain('/skill.md');
+    expect(readPublic('llms-full.txt')).toContain('maintenance-first');
+    expect(AGENT_SURFACE.catalog).toEqual(JSON.parse(readPublic('api-ai.json')));
+  });
+
+  it('keeps the public product truth and extension boundary aligned', () => {
+    const home = readPublic('index.md');
+    const faq = readPublic('faq.md');
+    const pricing = readPublic('pricing.md');
+
+    for (const document of [home, faq]) {
+      expect(document).toContain('Chrome');
+      expect(document).toContain('distribution is deferred');
+    }
+    expect(home).toContain('maintenance-first');
+    expect(home).toContain('no public plan or checkout');
+    expect(pricing).toContain('no public plan, checkout, paid tier, or purchase flow');
+  });
+
+  it('publishes a digest-verified source-workflow skill', () => {
+    const skill = readPublic('.well-known/agent-skills/reader-source-workflow/SKILL.md');
+    const index = JSON.parse(readPublic('.well-known/agent-skills/index.json'));
+    const digest = `sha256:${createHash('sha256').update(skill).digest('hex')}`;
+
+    expect(index.skills).toHaveLength(1);
+    expect(index.skills[0]).toMatchObject({
+      name: 'reader-source-workflow',
+      type: 'skill-md',
+      digest,
+    });
+    expect(readPublic('skill.md')).toBe(skill);
+  });
+
+  it('serves route Markdown and rebinds catalogs for preview origins', async () => {
+    const env = {
+      ASSETS: {
+        fetch: async (request: Request) => {
+          const pathname = new URL(request.url).pathname.replace(/^\//, '');
+          try {
+            return new Response(request.method === 'HEAD' ? null : readPublic(pathname), {
+              headers: {
+                'Content-Type': pathname.endsWith('.json')
+                  ? 'application/json; charset=utf-8'
+                  : 'text/markdown; charset=utf-8',
+              },
+            });
+          } catch {
+            return new Response('not found', { status: 404 });
+          }
+        },
+      },
+    };
+
+    const markdown = await handleAgentEdge(
+      new Request('https://reader-preview.example/faq', {
+        headers: { Accept: 'text/markdown' },
+      }),
+      env
+    );
+    expect(markdown?.status).toBe(200);
+    expect(markdown?.headers.get('vary')).toBe('Accept');
+    expect(await markdown?.text()).toContain('# Reader FAQ');
+
+    const botMarkdown = await handleAgentEdge(
+      new Request('https://reader-preview.example/', {
+        headers: { 'User-Agent': 'GPTBot/1.0', Accept: 'text/html' },
+      }),
+      env
+    );
+    expect(botMarkdown?.status).toBe(200);
+    expect(botMarkdown?.headers.get('content-type')).toContain('text/markdown');
+    expect(await botMarkdown?.text()).toContain('# Reader');
+
+    const catalog = await handleAgentEdge(
+      new Request('https://reader-preview.example/api/ai'),
+      env
+    );
+    expect(catalog?.status).toBe(200);
+    expect(await catalog?.text()).toContain('https://reader-preview.example/index.md');
+
+    const aiCatalog = await handleAgentEdge(
+      new Request('https://reader-preview.example/.well-known/ai-catalog.json'),
+      env
+    );
+    expect(aiCatalog?.status).toBe(200);
+    expect(await aiCatalog?.text()).toContain('https://reader-preview.example/openapi.json');
+
+    const sitemap = await handleAgentEdge(
+      new Request('https://reader-preview.example/sitemap.xml'),
+      env
+    );
+    expect(sitemap?.status).toBe(200);
+    expect(await sitemap?.text()).toContain('https://reader-preview.example/faq');
+
+    const robots = await handleAgentEdge(
+      new Request('https://reader-preview.example/robots.txt'),
+      env
+    );
+    expect(robots?.status).toBe(200);
+    expect(await robots?.text()).toContain('Sitemap: https://reader-preview.example/sitemap.xml');
   });
 
   // Regression for #47: every sitemap URL must render a self-canonical

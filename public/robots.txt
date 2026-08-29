@@ -7,3 +7,17 @@ Allow: /llms.txt
 Allow: /index.md
 Allow: /api/ai
 Allow: /llms-full.txt
+Allow: /agents.md
+Allow: /pricing.md
+Allow: /skill.md
+Allow: /.well-known/ai-catalog.json
+Allow: /.well-known/agent-skills/
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /

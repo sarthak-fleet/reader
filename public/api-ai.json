@@ -1,6 +1,6 @@
 {
   "name": "Reader",
-  "version": "1",
+  "version": "2",
   "url": "https://read.significanthobbies.com",
   "llms": "https://read.significanthobbies.com/llms.txt",
   "llmsFull": "https://read.significanthobbies.com/llms-full.txt",
@@ -11,20 +11,31 @@
     "negotiation": true
   },
   "openapi": "https://read.significanthobbies.com/openapi.json",
+  "aiCatalog": "https://read.significanthobbies.com/.well-known/ai-catalog.json",
+  "instructions": "https://read.significanthobbies.com/agents.md",
+  "pricing": "https://read.significanthobbies.com/pricing.md",
+  "skillIndex": "https://read.significanthobbies.com/.well-known/agent-skills/index.json",
+  "skills": [
+    {
+      "name": "reader-source-workflow",
+      "url": "https://read.significanthobbies.com/.well-known/agent-skills/reader-source-workflow/SKILL.md",
+      "digest": "sha256:f3dfccbb52edb447545f94b837e478693e0f0b94d148eb6f8e6a5fd855f4d926"
+    }
+  ],
   "surfaces": [
     {
       "id": "home",
       "url": "https://read.significanthobbies.com/",
       "md": "https://read.significanthobbies.com/index.md",
-      "kind": "spa",
-      "description": "Product home"
+      "kind": "static",
+      "description": "Product purpose, reading loop, current state, and access boundaries"
     },
     {
       "id": "faq",
       "url": "https://read.significanthobbies.com/faq",
       "md": "https://read.significanthobbies.com/faq.md",
       "kind": "static",
-      "description": "Frequently asked questions"
+      "description": "Practical access, privacy, AI, export, and extension answers"
     },
     {
       "id": "changelog",
@@ -32,17 +43,10 @@
       "md": "https://read.significanthobbies.com/changelog.md",
       "kind": "static",
       "description": "Verified product history"
-    },
-    {
-      "id": "login",
-      "url": "https://read.significanthobbies.com/login",
-      "md": "https://read.significanthobbies.com/login.md",
-      "kind": "auth",
-      "description": "Sign in"
     }
   ],
   "auth": {
     "public": true,
-    "notes": "Auth-walled app routes are not agent-indexed unless listed here."
+    "notes": "The catalog is public. Personal libraries and authenticated APIs are private and are not agent-indexed."
   }
 }
