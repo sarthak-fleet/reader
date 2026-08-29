@@ -1,0 +1,78 @@
+{
+  "$schema": "fleet.landing-audit.scorecard.v1",
+  "project": "reader",
+  "priority": "P2",
+  "candidate": "https://goto-isolation-rouge-observations.trycloudflare.com/",
+  "productionChanged": false,
+  "checkedAt": "2026-08-28",
+  "purpose": {
+    "score": 99,
+    "minimum": 85,
+    "p0": 0,
+    "p1": 0,
+    "note": "The first viewport names the personal research-library job, the serious-reader audience, article and PDF inputs, and the path from capture to retrieval. The page clearly distinguishes browser-local use, Google sign-in, source-built extension availability, and the absence of checkout."
+  },
+  "design": {
+    "score": 97,
+    "minimum": 85,
+    "p0": 0,
+    "p1": 0,
+    "note": "The warm editorial research-desk system, detailed Reader workspace, restrained rust accent, fine rules, and compact utility labels are specific to close reading rather than generic SaaS. Exact 390, 768, and 1440 CSS-pixel captures show intentional reflow with no horizontal overflow."
+  },
+  "seo": {
+    "score": 98,
+    "passed": 18,
+    "failed": 0,
+    "warnings": 0,
+    "note": "The full local Worker candidate passes title, description, canonical, social metadata, JSON-LD, headings, content depth, robots, sitemap reference, and sitemap coverage. The link graph has zero broken or redirecting internal targets; app and utility routes remain intentionally outside the three-page marketing sitemap."
+  },
+  "geo": {
+    "score": 100,
+    "candidateTier": "S",
+    "candidateScore": 100,
+    "productionTier": "A",
+    "productionScore": 90,
+    "note": "The full Worker candidate passes every Fleet agent-index contract through the public tunnel. Production is A/90 because one of four catalog surfaces is stale until a separately authorized release."
+  },
+  "performance": {
+    "score": 100,
+    "successfulCoverageRuns": 20,
+    "attemptedCoverageRuns": 20,
+    "weightedLcpMs": 467,
+    "weightedCls": 0,
+    "weightedTbtMs": 0,
+    "profiles": {
+      "mobileSlowScore": 100,
+      "mobileSlowLcpMs": 1256,
+      "mobileMidScore": 100,
+      "mobileMidLcpMs": 639,
+      "mobileFastScore": 100,
+      "mobileFastLcpMs": 320,
+      "desktopScore": 100,
+      "desktopLcpMs": 174
+    },
+    "note": "All twenty Lighthouse audits completed. Every profile scores 100 with zero CLS, zero TBT, and no actionable Lighthouse opportunity; even the slow-3G low-end Android profile remains comfortably within the good LCP band."
+  },
+  "verification": {
+    "primaryJourney": "A visitor can understand the capture-to-reading loop, open the browser-local library or a sample, and distinguish account-backed use from public product discovery without encountering invented pricing or distribution claims.",
+    "repositoryCheck": "TypeScript has no errors; 29 focused route and agent-surface tests pass; the complete SPA plus Astro overlay builds; documentation checks pass.",
+    "seoAudit": "18 passed, 0 failed, 0 warnings; internal link graph has zero errors or redirects.",
+    "agentIndex": "Candidate S-tier at 100 through the public tunnel; production A-tier at 90.",
+    "footer": {
+      "askAi": "pass",
+      "projectStrip": "pass",
+      "note": "The Ask AI loader uses data-compose=false and preserves the explicitly mounted Fleet project strip."
+    },
+    "responsiveScreenshots": [
+      ".fleet/evidence/landing-audit/after-390.png",
+      ".fleet/evidence/landing-audit/after-768.png",
+      ".fleet/evidence/landing-audit/after-1440.png"
+    ]
+  },
+  "limitations": [
+    "No deployment, commit, push, DNS change, account action, database mutation, or production configuration change was performed.",
+    "The local Worker started with the repository's existing local development configuration; no secret value or environment file was read or changed by the audit.",
+    "The temporary Cloudflare quick tunnel has no uptime guarantee and exists only to review the current local candidate.",
+    "INP requires field interaction data and is not measured by Lighthouse navigation mode; production RUM or CrUX remains the appropriate field-data source."
+  ]
+}
