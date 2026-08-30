@@ -9,7 +9,6 @@ const STRING_KEYS: (keyof WorkerEnv)[] = [
   'BETTER_AUTH_BASE_URL',
   'GOOGLE_CLIENT_ID',
   'GOOGLE_CLIENT_SECRET',
-  'AI_GATEWAY_API_KEY',
   'AI_API_KEY',
   'AI_BASE_URL',
   'LOCAL_AI_URL',

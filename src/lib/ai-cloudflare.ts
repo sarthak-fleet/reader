@@ -1,7 +1,10 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import type { LanguageModel } from 'ai';
+import { createWorkersAI, type WorkersAISettings } from 'workers-ai-provider';
 
 import type { AIConfig } from './ai-vendor';
+
+export type WorkersAiBinding = Extract<WorkersAISettings, { binding: unknown }>['binding'];
 
 /**
  * Build a LanguageModel from an AIConfig, talking to any OpenAI-compatible
@@ -14,46 +17,41 @@ function createAIModel(
   const provider = createOpenAICompatible({
     baseURL: config.endpointUrl.trim().replace(/\/+$/, ''),
     apiKey: config.apiKey,
-    name: options?.name ?? 'free-ai',
+    name: options?.name ?? 'reader-direct',
     headers: options?.headers,
   });
   return provider.chatModel(config.model);
 }
 
-/**
- * Default Workers AI text model. ~64 Neurons/inference. Routed through the
- * free-ai-gateway, which enforces a daily 9500-Neuron hard cap so we never
- * exceed the 10k/day free tier across the entire Fleet.
- */
+/** Default model when the project's direct endpoint is Workers AI. */
 const DEFAULT_WORKERS_AI_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
 
-const FALLBACK_GATEWAY_BASE_URL = 'https://ai-gateway.sassmaker.com/v1';
-const PROJECT_ID = 'reader';
-
 interface CreateLanguageModelArgs {
+  binding?: WorkersAiBinding;
   endpointUrl: string;
   apiKey: string;
   model: string;
   headers?: Record<string, string>;
 }
 
-function getGatewayBaseUrl(): string {
+function getDirectBaseUrl(): string {
   const fromEnv = process.env.AI_BASE_URL?.trim();
-  if (fromEnv) return fromEnv.replace(/\/+$/, '');
-  return FALLBACK_GATEWAY_BASE_URL;
+  if (!fromEnv) throw new Error('AI_BASE_URL is required when no BYOK endpoint is supplied');
+  return fromEnv.replace(/\/+$/, '');
 }
 
-function getGatewayApiKey(): string {
-  return (process.env.AI_GATEWAY_API_KEY ?? process.env.AI_API_KEY)?.trim() ?? '';
+function getDirectApiKey(): string {
+  const apiKey = process.env.AI_API_KEY?.trim();
+  if (!apiKey) throw new Error('AI_API_KEY is required when no BYOK key is supplied');
+  return apiKey;
 }
 
 /**
- * Returns a LanguageModel that talks to free-ai-gateway by default. The
- * gateway is the single Workers AI chokepoint for the entire Fleet — it owns
- * the daily Neuron budget. Users can still BYO an external provider by
- * supplying both `endpointUrl` and `apiKey`.
+ * Returns a model for an explicit BYOK endpoint or the project's own direct
+ * free-provider/local endpoint. No shared gateway fallback exists.
  */
 export function getLanguageModel({
+  binding,
   endpointUrl,
   apiKey,
   model,
@@ -64,24 +62,18 @@ export function getLanguageModel({
     return createAIModel({ endpointUrl, apiKey, model } as AIConfig, { headers });
   }
 
-  const gatewayBaseUrl = getGatewayBaseUrl();
-  const gatewayApiKey = getGatewayApiKey();
+  if (binding) {
+    return createWorkersAI({ binding })(model || DEFAULT_WORKERS_AI_MODEL);
+  }
+
   const resolvedModel = model || DEFAULT_WORKERS_AI_MODEL;
 
   return createAIModel(
     {
-      endpointUrl: gatewayBaseUrl,
-      // free-ai-gateway tolerates an empty key; pass a placeholder so the
-      // OpenAI-compatible client still attaches a Bearer header (some
-      // intermediaries strip empty Authorization values).
-      apiKey: gatewayApiKey || 'free-ai-gateway',
+      endpointUrl: getDirectBaseUrl(),
+      apiKey: getDirectApiKey(),
       model: resolvedModel,
     } as AIConfig,
-    {
-      headers: {
-        'x-gateway-project-id': PROJECT_ID,
-        ...headers,
-      },
-    }
+    { headers }
   );
 }

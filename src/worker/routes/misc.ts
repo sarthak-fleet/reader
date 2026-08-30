@@ -372,10 +372,10 @@ misc.post('/ext/chat', async (c) => {
   try {
     const result = streamText({
       model: getLanguageModel({
+        binding: c.env.AI,
         endpointUrl: '',
         apiKey: '',
-        model: 'auto',
-        headers: { 'x-gateway-project-id': 'reader' },
+        model: '',
       }),
       system: systemPrompt,
       messages: toSDKMessages(messages),

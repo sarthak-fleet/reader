@@ -289,10 +289,10 @@ articles.post('/:id/session-review', async (c) => {
 
     const result = await generateText({
       model: getLanguageModel({
+        binding: c.env.AI,
         endpointUrl,
         apiKey,
         model,
-        headers: { 'x-gateway-project-id': 'reader' },
       }),
       system: SESSION_REVIEW_SYSTEM_PROMPT,
       prompt: buildSessionReviewPrompt(article.title, noteInputs),

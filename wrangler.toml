@@ -20,9 +20,11 @@ head_sampling_rate = 0.1
 [limits]
 cpu_ms = 30000
 
+[ai]
+binding = "AI"
+
 [vars]
 NODE_ENV = "production"
-AI_BASE_URL = "https://ai-gateway.sassmaker.com/v1"
 BETTER_AUTH_URL = "https://read.significanthobbies.com"
 AUTH0_ISSUER = "https://dev-0suel086hm1blvg7.us.auth0.com/"
 AUTH0_MCP_AUDIENCE = "https://mcp.significanthobbies.com/reader/mcp"

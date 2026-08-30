@@ -90,10 +90,10 @@ ai.post('/chat', async (c) => {
   try {
     const result = streamText({
       model: getLanguageModel({
+        binding: c.env.AI,
         endpointUrl,
         apiKey,
         model,
-        headers: { 'x-gateway-project-id': 'reader' },
       }),
       system: systemPrompt,
       messages: toSDKMessages(messages),
@@ -167,10 +167,10 @@ Remember to respond with valid JSON in the exact format specified.`;
 
     const result = await generateText({
       model: getLanguageModel({
+        binding: c.env.AI,
         endpointUrl,
         apiKey,
         model,
-        headers: { 'x-gateway-project-id': 'reader' },
       }),
       system: SUMMARY_SYSTEM_PROMPT,
       prompt: userPrompt,
