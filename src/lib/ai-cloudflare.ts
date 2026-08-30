@@ -4,7 +4,7 @@ import { createWorkersAI, type WorkersAISettings } from 'workers-ai-provider';
 
 import type { AIConfig } from './ai-vendor';
 
-export type WorkersAiBinding = Extract<WorkersAISettings, { binding: unknown }>['binding'];
+type WorkersAiBinding = Extract<WorkersAISettings, { binding: unknown }>['binding'];
 
 /**
  * Build a LanguageModel from an AIConfig, talking to any OpenAI-compatible
