@@ -4,6 +4,7 @@ import { oneTap } from 'better-auth/plugins';
 
 import { createDb, type DbEnv } from './db/client';
 import { baAccounts, baSessions, baVerifications, users } from './db/schema';
+import { createPing } from './ping';
 
 export type AuthEnv = DbEnv & {
   BETTER_AUTH_SECRET?: string;
@@ -13,6 +14,8 @@ export type AuthEnv = DbEnv & {
   GOOGLE_CLIENT_ID?: string;
   GOOGLE_CLIENT_SECRET?: string;
   NODE_ENV?: string;
+  APP_HEALTH_INGEST_KEY?: string;
+  APP_HEALTH_ENVIRONMENT?: string;
 };
 
 export function createAuth(env: AuthEnv) {
@@ -27,6 +30,7 @@ export function createAuth(env: AuthEnv) {
   const googleClientId = env.GOOGLE_CLIENT_ID?.trim();
   const googleClientSecret = env.GOOGLE_CLIENT_SECRET?.trim();
   const db = createDb(env);
+  const ping = createPing({ key: env.APP_HEALTH_INGEST_KEY, environment: env.APP_HEALTH_ENVIRONMENT });
 
   return betterAuth({
     secret: authSecret,
@@ -48,6 +52,18 @@ export function createAuth(env: AuthEnv) {
         ? { google: { clientId: googleClientId, clientSecret: googleClientSecret } }
         : {},
     plugins: [oneTap()],
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (newUser) => {
+            await ping('signup', {
+              title: newUser.email,
+              props: { id: newUser.id, name: newUser.name },
+            });
+          },
+        },
+      },
+    },
     rateLimit: {
       enabled: false,
     },
