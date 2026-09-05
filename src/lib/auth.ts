@@ -30,7 +30,10 @@ export function createAuth(env: AuthEnv) {
   const googleClientId = env.GOOGLE_CLIENT_ID?.trim();
   const googleClientSecret = env.GOOGLE_CLIENT_SECRET?.trim();
   const db = createDb(env);
-  const ping = createPing({ key: env.APP_HEALTH_INGEST_KEY, environment: env.APP_HEALTH_ENVIRONMENT });
+  const ping = createPing({
+    key: env.APP_HEALTH_INGEST_KEY,
+    environment: env.APP_HEALTH_ENVIRONMENT,
+  });
 
   return betterAuth({
     secret: authSecret,
