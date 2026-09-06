@@ -113,6 +113,11 @@ summary {
   text-decoration: underline;
 }
 
+.footer-github-link {
+  display: inline-flex;
+  align-items: center;
+}
+
 .btn-signin,
 .btn-primary,
 .btn-secondary {
